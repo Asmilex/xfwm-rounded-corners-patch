@@ -1,7 +1,7 @@
 ## Xfwm Rounded Corners Patch
 This is a patch for Xfwm4 that allows drawing windows with rounded corners.
 
-It was adapted from a [patch targeting Openbox](https://github.com/dylanaraps/openbox-patched/blob/master/openbox-3.6.2-rounded-corners.patch) with some advanced copy-pasting techniques.
+It was adapted from a [patch targeting Openbox](https://github.com/dylanaraps/openbox-patched/blob/master/openbox-3.6.2-rounded-corners.patch) with some advanced copy-pasting techniques 🤭.
 
 The patch in its current state can be applied to an Xfwm 4.12.5 codebase and was not tested on other versions.
 
@@ -18,7 +18,7 @@ cd xfwm4
 git checkout xfwm4-4.12.5
 ```
 
-Then, make sure you are able to build the original source code without errors (hunt and install dependencies on your own):
+Then, make sure you can build the original source code without errors (hunt and install dependencies on your own):
 ```
 ./autogen.sh --prefix=/usr
 make
