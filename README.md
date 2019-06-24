@@ -47,9 +47,4 @@ xfconf-query -c xfwm4 -p /general/rounded_corners_maximized -s true
 
 Setting the radius value to 0 disables the effect altogether and restores window decorations.
 
-In order to apply the changes, you have to restart the Xfwm:
-```
-./src/xfwm4 --replace &
-```
-
 <sub>* Yeah, this patch is more about the aesthetics than functionality.</sub>
