@@ -208,7 +208,7 @@ index ca0d51158..24efa75f6 100644
              xfwmWindowHide (&c->sides[SIDE_LEFT]);
              xfwmWindowHide (&c->sides[SIDE_RIGHT]);
 diff --git a/src/settings.c b/src/settings.c
-index ce2f8c04f..76480d411 100644
+index ce2f8c04f..cdb456c1c 100644
 --- a/src/settings.c
 +++ b/src/settings.c
 @@ -788,9 +788,14 @@ loadSettings (ScreenInfo *screen_info)
@@ -236,26 +236,30 @@ index ce2f8c04f..76480d411 100644
      freeRc (rc);
      return TRUE;
  }
-@@ -1258,7 +1266,8 @@ cb_xfwm4_channel_property_changed(XfconfChannel *channel, const gchar *property_
-                       || (!strcmp (name, "shadow_opacity"))
-                       || (!strcmp (name, "title_horizontal_offset"))
-                       || (!strcmp (name, "title_vertical_offset_active"))
--                      || (!strcmp (name, "title_vertical_offset_inactive")))
-+                      || (!strcmp (name, "title_vertical_offset_inactive"))
-+                      || (!strcmp (name, "rounded_corners_radius")))
+@@ -1246,6 +1254,11 @@ cb_xfwm4_channel_property_changed(XfconfChannel *channel, const gchar *property_
                  {
-                     /* These properties are not configurable via xfconf */
+                     screen_info->params->cycle_tabwin_mode = CLAMP (g_value_get_int(value), 0, 1);
                  }
-@@ -1432,7 +1441,8 @@ cb_xfwm4_channel_property_changed(XfconfChannel *channel, const gchar *property_
++                else if (!strcmp (name, "rounded_corners_radius"))
++                {
++                    screen_info->params->rounded_corners_radius = CLAMP (g_value_get_int(value), 0, 100);
++                    reloadScreenSettings (screen_info, UPDATE_ALL);
++                }
+                 else if ((!strcmp (name, "button_offset"))
+                       || (!strcmp (name, "button_spacing"))
+                       || (!strcmp (name, "double_click_time"))
+@@ -1431,6 +1444,11 @@ cb_xfwm4_channel_property_changed(XfconfChannel *channel, const gchar *property_
+                 {
                      screen_info->params->wrap_cycle = g_value_get_boolean (value);
                  }
++                else if (!strcmp (name, "rounded_corners_maximized"))
++                {
++                    screen_info->params->rounded_corners_maximized = g_value_get_boolean (value);
++                    reloadScreenSettings (screen_info, UPDATE_MAXIMIZE);
++                }
                  else if ((!strcmp (name, "full_width_title"))
--                      || (!strcmp (name, "show_app_icon")))
-+                      || (!strcmp (name, "show_app_icon"))
-+                      || (!strcmp (name, "rounded_corners_maximized")))
+                       || (!strcmp (name, "show_app_icon")))
                  {
-                     /* These properties are not configurable via xfconf */
-                 }
 diff --git a/src/settings.h b/src/settings.h
 index b1467b981..a0f628032 100644
 --- a/src/settings.h
