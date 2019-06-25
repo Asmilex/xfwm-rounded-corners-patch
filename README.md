@@ -35,6 +35,17 @@ After that, there should be an `xfwm4` binary in the `src` subdirectory. You can
 ./src/xfwm4 --replace &
 ```
 
+The easiest way to run it on a daily basis, without messing up your existing setup, is to create an autostart entry that launches the new `xfwm4` binary while stopping the original one. For example, it's possible to do it like this:
+```
+tee ~/.config/autostart/xfwm-rounded-corners.desktop <<EOF
+[Desktop Entry]
+Type=Application
+Name=xfwm-rounded-corners
+Exec=$(pwd)/src/xfwm4 --replace
+OnlyShowIn=XFCE;
+EOF
+```
+
 ### Configuring the rounded corners
 By default, the rounded corners have a radius of 12 px and are disabled for maximized windows. Also, the window decorations such as titlebar and borders are hidden, because it doesn't look any good* with current implementation.
 
