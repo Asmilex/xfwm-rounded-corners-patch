@@ -1,5 +1,5 @@
 diff --git a/src/frame.c b/src/frame.c
-index ca0d51158..bdfe07eac 100644
+index ca0d51158..c03a68817 100644
 --- a/src/frame.c
 +++ b/src/frame.c
 @@ -90,7 +90,8 @@ frameLeft (Client * c)
@@ -112,7 +112,7 @@ index ca0d51158..bdfe07eac 100644
      {
          return 0;
      }
-@@ -692,6 +702,62 @@ getLetterFromButton (int i, Client * c)
+@@ -692,6 +702,63 @@ getLetterFromButton (int i, Client * c)
      return chr;
  }
  
@@ -123,8 +123,9 @@ index ca0d51158..bdfe07eac 100644
 +    DisplayInfo *display_info = screen_info->display_info;
 +
 +    int rad = screen_info->params->rounded_corners_radius;
-+    if (!rad || (FLAG_TEST_ALL (c->flags, CLIENT_FLAG_MAXIMIZED)
-+                 && !screen_info->params->rounded_corners_maximized))
++    if (!rad || c->type == WINDOW_DOCK
++        || (FLAG_TEST_ALL (c->flags, CLIENT_FLAG_MAXIMIZED)
++            && !screen_info->params->rounded_corners_maximized))
 +    {
 +        return;
 +    }
@@ -175,7 +176,7 @@ index ca0d51158..bdfe07eac 100644
  static void
  frameSetShape (Client * c, int state, FramePixmap * frame_pix, int button_x[BUTTON_COUNT])
  {
-@@ -736,6 +802,11 @@ frameSetShape (Client * c, int state, FramePixmap * frame_pix, int button_x[BUTT
+@@ -736,6 +803,11 @@ frameSetShape (Client * c, int state, FramePixmap * frame_pix, int button_x[BUTT
          rect.width  = c->width;
          rect.height = c->height;
          XShapeCombineRectangles (display_info->dpy, screen_info->shape_win, ShapeBounding, 0, 0, &rect, 1, ShapeSet, Unsorted);
@@ -187,7 +188,7 @@ index ca0d51158..bdfe07eac 100644
      }
      else
      {
-@@ -931,6 +1002,8 @@ frameSetShape (Client * c, int state, FramePixmap * frame_pix, int button_x[BUTT
+@@ -931,6 +1003,8 @@ frameSetShape (Client * c, int state, FramePixmap * frame_pix, int button_x[BUTT
                                      MYWINDOW_XWINDOW (c->buttons[i]), ShapeBounding, ShapeUnion);
              }
          }
@@ -196,7 +197,7 @@ index ca0d51158..bdfe07eac 100644
      }
      rect.x = 0;
      rect.y = 0;
-@@ -1180,8 +1253,9 @@ frameDrawWin (Client * c)
+@@ -1180,8 +1254,9 @@ frameDrawWin (Client * c)
                  &screen_info->corners[CORNER_BOTTOM_RIGHT][state]);
          }
  
