@@ -6,7 +6,7 @@ It was adapted from a [patch targeting Openbox](https://github.com/dylanaraps/op
 The patch in its current state can be applied to an Xfwm 4.12.5 codebase and was not tested on other versions.
 
 ### Screenshot
-Few applications with default radius for rounded corners and disabled shadows for clarity.
+Sample windows with 12 px radius for rounded corners, hidden decorations and disabled shadows for clarity.
 
 ![](https://i.imgur.com/L84NfF2.png)
 
@@ -47,15 +47,14 @@ EOF
 ```
 
 ### Configuring the rounded corners
-By default, the rounded corners have a radius of 12 px and are disabled for maximized windows. Also, the window decorations such as titlebar and borders are hidden, because it doesn't look any good* with current implementation.
+By default, the rounded corners have a radius of 8 px and are disabled for maximized windows. Also, window decorations are visible by default, but mind that most Xfwm themes won't look good with rounded corners because they provide side and bottom borders. Themes with no borders, but only with titlebar, should look fine though.
 
-You can change the radius and enable maximized rounding with these commands:
+You can change the radius, enable maximized rounding or hide window decorations with these commands:
 
 ```
-xfconf-query -c xfwm4 -p /general/rounded_corners_radius -s 18
+xfconf-query -c xfwm4 -p /general/rounded_corners_radius -s 12
 xfconf-query -c xfwm4 -p /general/rounded_corners_maximized -s true
+xfconf-query -c xfwm4 -p /general/rounded_corners_keep_decorations -s false
 ```
 
-Setting the radius value to 0 disables the effect altogether and restores window decorations.
-
-<sub>* Yeah, this patch is more about the aesthetics than functionality.</sub>
+Setting the radius value to 0 disables the effect and restores original window shapes.
