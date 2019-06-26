@@ -1,107 +1,94 @@
 diff --git a/src/frame.c b/src/frame.c
-index ca0d51158..24efa75f6 100644
+index ca0d51158..bdfe07eac 100644
 --- a/src/frame.c
 +++ b/src/frame.c
-@@ -45,6 +45,12 @@ typedef struct
-     xfwmPixmap pm_sides[SIDE_COUNT];
- } FramePixmap;
- 
-+gboolean
-+roundedCornersKeepDecorations (ScreenInfo *screen_info)
-+{
-+    return !screen_info->params->rounded_corners_radius;
-+}
-+
- int
- frameDecorationLeft (ScreenInfo *screen_info)
- {
-@@ -90,7 +96,8 @@ frameLeft (Client * c)
+@@ -90,7 +90,8 @@ frameLeft (Client * c)
      if (FLAG_TEST (c->xfwm_flags, XFWM_FLAG_HAS_BORDER)
          && !FLAG_TEST (c->flags, CLIENT_FLAG_FULLSCREEN)
          && (!FLAG_TEST_ALL (c->flags, CLIENT_FLAG_MAXIMIZED)
 -            || !(c->screen_info->params->borderless_maximize)))
 +            || !(c->screen_info->params->borderless_maximize))
-+        && roundedCornersKeepDecorations (c->screen_info))
++        && c->screen_info->params->rounded_corners_keep_decorations)
      {
          return c->screen_info->sides[SIDE_LEFT][ACTIVE].width;
      }
-@@ -106,7 +113,8 @@ frameRight (Client * c)
+@@ -106,7 +107,8 @@ frameRight (Client * c)
      if (FLAG_TEST (c->xfwm_flags, XFWM_FLAG_HAS_BORDER)
          && !FLAG_TEST (c->flags, CLIENT_FLAG_FULLSCREEN)
          && (!FLAG_TEST_ALL (c->flags, CLIENT_FLAG_MAXIMIZED)
 -            || !(c->screen_info->params->borderless_maximize)))
 +            || !(c->screen_info->params->borderless_maximize))
-+        && roundedCornersKeepDecorations (c->screen_info))
++        && c->screen_info->params->rounded_corners_keep_decorations)
      {
          return c->screen_info->sides[SIDE_RIGHT][ACTIVE].width;
      }
-@@ -119,7 +127,7 @@ frameTop (Client * c)
+@@ -119,7 +121,7 @@ frameTop (Client * c)
      TRACE ("entering frameTop");
  
      g_return_val_if_fail (c != NULL, 0);
 -    if (CLIENT_HAS_FRAME (c))
-+    if (CLIENT_HAS_FRAME (c) && roundedCornersKeepDecorations (c->screen_info))
++    if (CLIENT_HAS_FRAME (c) && c->screen_info->params->rounded_corners_keep_decorations)
      {
          return c->screen_info->title[TITLE_3][ACTIVE].height;
      }
-@@ -135,7 +143,8 @@ frameBottom (Client * c)
+@@ -135,7 +137,8 @@ frameBottom (Client * c)
      if (FLAG_TEST (c->xfwm_flags, XFWM_FLAG_HAS_BORDER)
          && !FLAG_TEST (c->flags, CLIENT_FLAG_FULLSCREEN)
          && (!FLAG_TEST_ALL (c->flags, CLIENT_FLAG_MAXIMIZED)
 -            || !(c->screen_info->params->borderless_maximize)))
 +            || !(c->screen_info->params->borderless_maximize))
-+        && roundedCornersKeepDecorations (c->screen_info))
++        && c->screen_info->params->rounded_corners_keep_decorations)
      {
          return c->screen_info->sides[SIDE_BOTTOM][ACTIVE].height;
      }
-@@ -151,7 +160,8 @@ frameX (Client * c)
+@@ -151,7 +154,8 @@ frameX (Client * c)
      if (FLAG_TEST (c->xfwm_flags, XFWM_FLAG_HAS_BORDER)
          && !FLAG_TEST (c->flags, CLIENT_FLAG_FULLSCREEN)
          && (!FLAG_TEST_ALL (c->flags, CLIENT_FLAG_MAXIMIZED)
 -            || !(c->screen_info->params->borderless_maximize)))
 +            || !(c->screen_info->params->borderless_maximize))
-+        && roundedCornersKeepDecorations (c->screen_info))
++        && c->screen_info->params->rounded_corners_keep_decorations)
      {
          return c->x - frameLeft (c);
      }
-@@ -165,7 +175,8 @@ frameY (Client * c)
+@@ -165,7 +169,8 @@ frameY (Client * c)
  
      g_return_val_if_fail (c != NULL, 0);
      if (FLAG_TEST (c->xfwm_flags, XFWM_FLAG_HAS_BORDER)
 -         && !FLAG_TEST (c->flags, CLIENT_FLAG_FULLSCREEN))
 +         && !FLAG_TEST (c->flags, CLIENT_FLAG_FULLSCREEN)
-+         && roundedCornersKeepDecorations (c->screen_info))
++         && c->screen_info->params->rounded_corners_keep_decorations)
      {
          return c->y - frameTop (c);
      }
-@@ -181,7 +192,8 @@ frameWidth (Client * c)
+@@ -181,7 +186,8 @@ frameWidth (Client * c)
      if (FLAG_TEST (c->xfwm_flags, XFWM_FLAG_HAS_BORDER)
          && !FLAG_TEST (c->flags, CLIENT_FLAG_FULLSCREEN)
          && (!FLAG_TEST_ALL (c->flags, CLIENT_FLAG_MAXIMIZED)
 -            || !(c->screen_info->params->borderless_maximize)))
 +            || !(c->screen_info->params->borderless_maximize))
-+        && roundedCornersKeepDecorations (c->screen_info))
++        && c->screen_info->params->rounded_corners_keep_decorations)
      {
          return c->width + frameLeft (c) + frameRight (c);
      }
-@@ -196,12 +208,14 @@ frameHeight (Client * c)
+@@ -196,12 +202,14 @@ frameHeight (Client * c)
      g_return_val_if_fail (c != NULL, 0);
      if (FLAG_TEST (c->xfwm_flags, XFWM_FLAG_HAS_BORDER)
          && FLAG_TEST (c->flags, CLIENT_FLAG_SHADED)
 -        && !FLAG_TEST (c->flags, CLIENT_FLAG_FULLSCREEN))
 +        && !FLAG_TEST (c->flags, CLIENT_FLAG_FULLSCREEN)
-+        && roundedCornersKeepDecorations (c->screen_info))
++        && c->screen_info->params->rounded_corners_keep_decorations)
      {
          return frameTop (c) + frameBottom (c);
      }
      else if (FLAG_TEST (c->xfwm_flags, XFWM_FLAG_HAS_BORDER)
 -             && !FLAG_TEST (c->flags, CLIENT_FLAG_FULLSCREEN))
 +             && !FLAG_TEST (c->flags, CLIENT_FLAG_FULLSCREEN)
-+             && roundedCornersKeepDecorations (c->screen_info))
++             && c->screen_info->params->rounded_corners_keep_decorations)
      {
          return c->height + frameTop (c) + frameBottom (c);
      }
-@@ -320,8 +334,9 @@ frameTopLeftWidth (Client * c, int state)
+@@ -320,8 +328,9 @@ frameTopLeftWidth (Client * c, int state)
      TRACE ("entering frameTopLeftWidth");
  
      g_return_val_if_fail (c != NULL, 0);
@@ -109,11 +96,11 @@ index ca0d51158..24efa75f6 100644
 -        && c->screen_info->params->borderless_maximize)
 +    if (((FLAG_TEST_ALL (c->flags, CLIENT_FLAG_MAXIMIZED)
 +         && c->screen_info->params->borderless_maximize))
-+        || !roundedCornersKeepDecorations (c->screen_info))
++        || !c->screen_info->params->rounded_corners_keep_decorations)
      {
          return 0;
      }
-@@ -335,8 +350,9 @@ frameTopRightWidth (Client * c, int state)
+@@ -335,8 +344,9 @@ frameTopRightWidth (Client * c, int state)
      TRACE ("entering frameTopRightWidth");
  
      g_return_val_if_fail (c != NULL, 0);
@@ -121,11 +108,11 @@ index ca0d51158..24efa75f6 100644
 -        && c->screen_info->params->borderless_maximize)
 +    if (((FLAG_TEST_ALL (c->flags, CLIENT_FLAG_MAXIMIZED)
 +         && c->screen_info->params->borderless_maximize))
-+        || !roundedCornersKeepDecorations (c->screen_info))
++        || !c->screen_info->params->rounded_corners_keep_decorations)
      {
          return 0;
      }
-@@ -692,6 +708,60 @@ getLetterFromButton (int i, Client * c)
+@@ -692,6 +702,62 @@ getLetterFromButton (int i, Client * c)
      return chr;
  }
  
@@ -136,66 +123,80 @@ index ca0d51158..24efa75f6 100644
 +    DisplayInfo *display_info = screen_info->display_info;
 +
 +    int rad = screen_info->params->rounded_corners_radius;
-+    if (rad && (!FLAG_TEST_ALL (c->flags, CLIENT_FLAG_MAXIMIZED) ||
-+        screen_info->params->rounded_corners_maximized))
++    if (!rad || (FLAG_TEST_ALL (c->flags, CLIENT_FLAG_MAXIMIZED)
++                 && !screen_info->params->rounded_corners_maximized))
 +    {
-+        XWindowAttributes win_attr;
-+        XGetWindowAttributes (display_info->dpy, screen_info->shape_win, &win_attr);
-+        if (!XGetWindowAttributes (display_info->dpy, screen_info->shape_win, &win_attr))
-+        {
-+            return;
-+        }
-+
-+        int width = win_attr.border_width * 2 + win_attr.width;
-+        int height = win_attr.border_width * 2 + win_attr.height;
-+        int dia = 2 * rad;
-+        if (dia > width || dia > height)
-+        {
-+            return;
-+        }
-+
-+        Pixmap mask = XCreatePixmap (display_info->dpy, screen_info->shape_win, width, height, 1);
-+        if (!mask)
-+        {
-+            return;
-+        }
-+
-+        XGCValues xgcv;
-+        GC shape_gc = XCreateGC (display_info->dpy, mask, 0, &xgcv);
-+        if (!shape_gc)
-+        {
-+            XFreePixmap (display_info->dpy, mask);
-+            return;
-+        }
-+
-+        XSetForeground (display_info->dpy, shape_gc, 0);
-+        XFillRectangle (display_info->dpy, mask, shape_gc, 0, 0, width, height);
-+        XSetForeground (display_info->dpy, shape_gc, 1);
-+        XFillArc (display_info->dpy, mask, shape_gc, 0, 0, dia, dia, 0, 23040);
-+        XFillArc (display_info->dpy, mask, shape_gc, width-dia-1, 0, dia, dia, 0, 23040);
-+        XFillArc (display_info->dpy, mask, shape_gc, 0, height-dia-1, dia, dia, 0, 23040);
-+        XFillArc (display_info->dpy, mask, shape_gc, width-dia-1, height-dia-1, dia, dia, 0, 23040);
-+        XFillRectangle (display_info->dpy, mask, shape_gc, rad, 0, width-dia, height);
-+        XFillRectangle (display_info->dpy, mask, shape_gc, 0, rad, width, height-dia);
-+        XShapeCombineMask (display_info->dpy, screen_info->shape_win, ShapeBounding, 0, 0, mask, ShapeSet);
-+        XFreePixmap (display_info->dpy, mask);
-+        XFreeGC (display_info->dpy, shape_gc);
++        return;
 +    }
++
++    XWindowAttributes win_attr;
++    XGetWindowAttributes (display_info->dpy, screen_info->shape_win, &win_attr);
++    if (!XGetWindowAttributes (display_info->dpy, screen_info->shape_win, &win_attr))
++    {
++        return;
++    }
++
++    int width = win_attr.border_width * 2 + win_attr.width;
++    int height = win_attr.border_width * 2 + win_attr.height;
++    int dia = 2 * rad;
++    if (dia > width || dia > height)
++    {
++        return;
++    }
++
++    Pixmap mask = XCreatePixmap (display_info->dpy, screen_info->shape_win, width, height, 1);
++    if (!mask)
++    {
++        return;
++    }
++
++    XGCValues xgcv;
++    GC shape_gc = XCreateGC (display_info->dpy, mask, 0, &xgcv);
++    if (!shape_gc)
++    {
++        XFreePixmap (display_info->dpy, mask);
++        return;
++    }
++
++    XSetForeground (display_info->dpy, shape_gc, 0);
++    XFillRectangle (display_info->dpy, mask, shape_gc, 0, 0, width, height);
++    XSetForeground (display_info->dpy, shape_gc, 1);
++    XFillArc (display_info->dpy, mask, shape_gc, 0, 0, dia, dia, 0, 23040);
++    XFillArc (display_info->dpy, mask, shape_gc, width-dia-1, 0, dia, dia, 0, 23040);
++    XFillArc (display_info->dpy, mask, shape_gc, 0, height-dia-1, dia, dia, 0, 23040);
++    XFillArc (display_info->dpy, mask, shape_gc, width-dia-1, height-dia-1, dia, dia, 0, 23040);
++    XFillRectangle (display_info->dpy, mask, shape_gc, rad, 0, width-dia, height);
++    XFillRectangle (display_info->dpy, mask, shape_gc, 0, rad, width, height-dia);
++    XShapeCombineMask (display_info->dpy, screen_info->shape_win, ShapeBounding, 0, 0, mask, ShapeSet);
++    XFreePixmap (display_info->dpy, mask);
++    XFreeGC (display_info->dpy, shape_gc);
 +}
 +
  static void
  frameSetShape (Client * c, int state, FramePixmap * frame_pix, int button_x[BUTTON_COUNT])
  {
-@@ -736,6 +806,8 @@ frameSetShape (Client * c, int state, FramePixmap * frame_pix, int button_x[BUTT
+@@ -736,6 +802,11 @@ frameSetShape (Client * c, int state, FramePixmap * frame_pix, int button_x[BUTT
          rect.width  = c->width;
          rect.height = c->height;
          XShapeCombineRectangles (display_info->dpy, screen_info->shape_win, ShapeBounding, 0, 0, &rect, 1, ShapeSet, Unsorted);
 +
-+        frameRoundCorners (c);
++        if (!frame_pix)
++        {
++            frameRoundCorners (c);
++        }
      }
      else
      {
-@@ -1180,8 +1252,9 @@ frameDrawWin (Client * c)
+@@ -931,6 +1002,8 @@ frameSetShape (Client * c, int state, FramePixmap * frame_pix, int button_x[BUTT
+                                     MYWINDOW_XWINDOW (c->buttons[i]), ShapeBounding, ShapeUnion);
+             }
+         }
++
++        frameRoundCorners (c);
+     }
+     rect.x = 0;
+     rect.y = 0;
+@@ -1180,8 +1253,9 @@ frameDrawWin (Client * c)
                  &screen_info->corners[CORNER_BOTTOM_RIGHT][state]);
          }
  
@@ -203,40 +204,43 @@ index ca0d51158..24efa75f6 100644
 -            && (c->screen_info->params->borderless_maximize))
 +        if ((FLAG_TEST_ALL (c->flags, CLIENT_FLAG_MAXIMIZED)
 +             && (c->screen_info->params->borderless_maximize))
-+            || !roundedCornersKeepDecorations (c->screen_info))
++            || !c->screen_info->params->rounded_corners_keep_decorations)
          {
              xfwmWindowHide (&c->sides[SIDE_LEFT]);
              xfwmWindowHide (&c->sides[SIDE_RIGHT]);
 diff --git a/src/settings.c b/src/settings.c
-index ce2f8c04f..cdb456c1c 100644
+index ce2f8c04f..88211afaa 100644
 --- a/src/settings.c
 +++ b/src/settings.c
-@@ -788,9 +788,14 @@ loadSettings (ScreenInfo *screen_info)
+@@ -788,9 +788,16 @@ loadSettings (ScreenInfo *screen_info)
          {"wrap_windows", NULL, G_TYPE_BOOLEAN, TRUE},
          {"wrap_workspaces", NULL, G_TYPE_BOOLEAN, TRUE},
          {"zoom_desktop", NULL, G_TYPE_BOOLEAN, TRUE},
 +        {"rounded_corners_radius", NULL, G_TYPE_INT, TRUE},
 +        {"rounded_corners_maximized", NULL, G_TYPE_BOOLEAN, TRUE},
++        {"rounded_corners_keep_decorations", NULL, G_TYPE_BOOLEAN, TRUE},
          {NULL, NULL, G_TYPE_INVALID, FALSE}
      };
  
-+    setIntValue ("rounded_corners_radius", 12, rc);
++    setIntValue ("rounded_corners_radius", 8, rc);
 +    setBooleanValue ("rounded_corners_maximized", FALSE, rc);
++    setBooleanValue ("rounded_corners_keep_decorations", TRUE, rc);
 +
      TRACE ("entering loadSettings");
  
      loadRcData (screen_info, rc);
-@@ -944,6 +949,9 @@ loadSettings (ScreenInfo *screen_info)
+@@ -944,6 +951,10 @@ loadSettings (ScreenInfo *screen_info)
          workspaceSetCount (screen_info, (guint) MAX (getIntValue ("workspace_count", rc), 1));
      }
  
 +    screen_info->params->rounded_corners_radius = getIntValue ("rounded_corners_radius", rc);
 +    screen_info->params->rounded_corners_maximized = getBoolValue ("rounded_corners_maximized", rc);
++    screen_info->params->rounded_corners_keep_decorations = getBoolValue ("rounded_corners_keep_decorations", rc);
 +
      freeRc (rc);
      return TRUE;
  }
-@@ -1246,6 +1254,11 @@ cb_xfwm4_channel_property_changed(XfconfChannel *channel, const gchar *property_
+@@ -1246,6 +1257,11 @@ cb_xfwm4_channel_property_changed(XfconfChannel *channel, const gchar *property_
                  {
                      screen_info->params->cycle_tabwin_mode = CLAMP (g_value_get_int(value), 0, 1);
                  }
@@ -248,7 +252,7 @@ index ce2f8c04f..cdb456c1c 100644
                  else if ((!strcmp (name, "button_offset"))
                        || (!strcmp (name, "button_spacing"))
                        || (!strcmp (name, "double_click_time"))
-@@ -1431,6 +1444,11 @@ cb_xfwm4_channel_property_changed(XfconfChannel *channel, const gchar *property_
+@@ -1431,6 +1447,16 @@ cb_xfwm4_channel_property_changed(XfconfChannel *channel, const gchar *property_
                  {
                      screen_info->params->wrap_cycle = g_value_get_boolean (value);
                  }
@@ -257,19 +261,25 @@ index ce2f8c04f..cdb456c1c 100644
 +                    screen_info->params->rounded_corners_maximized = g_value_get_boolean (value);
 +                    reloadScreenSettings (screen_info, UPDATE_MAXIMIZE);
 +                }
++                else if (!strcmp (name, "rounded_corners_keep_decorations"))
++                {
++                    screen_info->params->rounded_corners_keep_decorations = g_value_get_boolean (value);
++                    reloadScreenSettings (screen_info, UPDATE_ALL);
++                }
                  else if ((!strcmp (name, "full_width_title"))
                        || (!strcmp (name, "show_app_icon")))
                  {
 diff --git a/src/settings.h b/src/settings.h
-index b1467b981..a0f628032 100644
+index b1467b981..062d0e3ff 100644
 --- a/src/settings.h
 +++ b/src/settings.h
-@@ -243,6 +243,8 @@ struct _XfwmParams
+@@ -243,6 +243,9 @@ struct _XfwmParams
      gboolean wrap_windows;
      gboolean wrap_workspaces;
      gboolean zoom_desktop;
 +    int rounded_corners_radius;
 +    gboolean rounded_corners_maximized;
++    gboolean rounded_corners_keep_decorations;
  };
  
  gboolean                 loadSettings                           (ScreenInfo *);
