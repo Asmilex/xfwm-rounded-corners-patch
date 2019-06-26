@@ -3,7 +3,7 @@ This is a patch for Xfwm4 that allows drawing windows with rounded corners.
 
 It was adapted from a [patch targeting Openbox](https://github.com/dylanaraps/openbox-patched/blob/master/openbox-3.6.2-rounded-corners.patch) with some advanced copy-pasting techniques 🤭.
 
-The patch in its current state can be applied to an Xfwm 4.12.5 codebase and was not tested on other versions.
+The patch in its current state can be applied to an Xfwm 4.12.5 or 4.13.2 codebase (there are two adequate files).
 
 ### Screenshot
 Sample windows with 12 px radius for rounded corners, hidden decorations and disabled shadows for clarity.
@@ -11,7 +11,7 @@ Sample windows with 12 px radius for rounded corners, hidden decorations and dis
 ![](https://i.imgur.com/L84NfF2.png)
 
 ### Applying the patch
-First, get the Xfwm's source code and checkout the tag corresponding to the 4.12.5 release:
+First, get the Xfwm's source code and checkout the tag corresponding to a supported version:
 ```
 git clone https://github.com/xfce-mirror/xfwm4.git
 cd xfwm4
@@ -24,7 +24,7 @@ Then, make sure you can build the original source code without errors (hunt and 
 make
 ```
 
-Finally, drop the patch file into the current directory, apply it and build the modified source code:
+Finally, drop the adequate patch file into the current directory, apply it and build the modified source code:
 ```
 git apply xfwm-4.12.5-rounded-corners.patch
 make
