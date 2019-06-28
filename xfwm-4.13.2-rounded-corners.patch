@@ -1,5 +1,5 @@
 diff --git a/src/frame.c b/src/frame.c
-index d3ddfec8b..31b1866c4 100644
+index d3ddfec8b..4126bd3c7 100644
 --- a/src/frame.c
 +++ b/src/frame.c
 @@ -90,7 +90,8 @@ frameLeft (Client * c)
@@ -112,7 +112,7 @@ index d3ddfec8b..31b1866c4 100644
      {
          return 0;
      }
-@@ -698,6 +708,63 @@ getLetterFromButton (int i, Client * c)
+@@ -698,6 +708,64 @@ getLetterFromButton (int i, Client * c)
      return chr;
  }
  
@@ -124,6 +124,7 @@ index d3ddfec8b..31b1866c4 100644
 +
 +    int rad = screen_info->params->rounded_corners_radius;
 +    if (!rad || c->type == WINDOW_DOCK
++        || FLAG_TEST_ALL (c->flags, CLIENT_FLAG_FULLSCREEN)
 +        || (FLAG_TEST_ALL (c->flags, CLIENT_FLAG_MAXIMIZED)
 +            && !screen_info->params->rounded_corners_maximized))
 +    {
@@ -176,7 +177,7 @@ index d3ddfec8b..31b1866c4 100644
  static void
  frameSetShape (Client * c, int state, FramePixmap * frame_pix, int button_x[BUTTON_COUNT])
  {
-@@ -742,6 +809,11 @@ frameSetShape (Client * c, int state, FramePixmap * frame_pix, int button_x[BUTT
+@@ -742,6 +810,11 @@ frameSetShape (Client * c, int state, FramePixmap * frame_pix, int button_x[BUTT
          rect.width  = c->width;
          rect.height = c->height;
          XShapeCombineRectangles (display_info->dpy, screen_info->shape_win, ShapeBounding, 0, 0, &rect, 1, ShapeSet, Unsorted);
@@ -188,7 +189,7 @@ index d3ddfec8b..31b1866c4 100644
      }
      else
      {
-@@ -937,6 +1009,8 @@ frameSetShape (Client * c, int state, FramePixmap * frame_pix, int button_x[BUTT
+@@ -937,6 +1010,8 @@ frameSetShape (Client * c, int state, FramePixmap * frame_pix, int button_x[BUTT
                                      MYWINDOW_XWINDOW (c->buttons[i]), ShapeBounding, ShapeUnion);
              }
          }
@@ -197,7 +198,7 @@ index d3ddfec8b..31b1866c4 100644
      }
      rect.x = 0;
      rect.y = 0;
-@@ -1184,8 +1258,9 @@ frameDrawWin (Client * c)
+@@ -1184,8 +1259,9 @@ frameDrawWin (Client * c)
                  &screen_info->corners[CORNER_BOTTOM_RIGHT][state]);
          }
  
